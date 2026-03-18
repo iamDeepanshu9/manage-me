@@ -15,7 +15,7 @@ export const MonthlySpendWidget = () => (
         12% less than last month
       </div>
     </div>
-    <div className="h-16 flex items-end gap-1.5 w-full mt-4">
+    <div className="flex-1 min-h-[64px] flex items-end gap-1.5 w-full mt-4">
       <div className="flex-1 bg-[#dbeafe] dark:bg-slate-800 rounded-t h-1/2 transition-colors duration-300"></div>
       <div className="flex-1 bg-[#dbeafe] dark:bg-slate-800 rounded-t h-2/3 transition-colors duration-300"></div>
       <div className="flex-1 bg-[#dbeafe] dark:bg-slate-800 rounded-t h-1/3 transition-colors duration-300"></div>

@@ -100,7 +100,7 @@ export const MusicWidget = () => {
             </div>
           </div>
         ) : (
-          <div className={`w-full relative rounded-xl overflow-hidden shadow-inner transition-all duration-500 bg-black/5 ${platform === 'youtube' ? (videoMode ? 'h-[240px]' : 'h-[80px]') : (videoMode ? 'h-[352px]' : 'h-[152px]')}`}>
+          <div className={`w-full relative rounded-xl overflow-hidden shadow-inner transition-all duration-500 bg-black/5 flex-1 min-h-[80px] ${platform === 'youtube' && !videoMode ? 'max-h-[80px]' : platform === 'spotify' && !videoMode ? 'max-h-[152px]' : ''}`}>
             <iframe
               src={embedUrl}
               className="absolute top-0 left-0 w-full h-full border-0 rounded-xl"

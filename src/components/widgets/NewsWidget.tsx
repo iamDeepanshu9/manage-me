@@ -4,14 +4,14 @@ import React from "react";
 
 export const NewsWidget = () => (
   <div className="glass rounded-2xl p-6 widget-shadow overflow-hidden flex flex-col transform transition-transform hover:scale-[1.02] duration-300 h-full">
-    <div className="flex justify-between items-center mb-4">
+    <div className="flex justify-between items-center mb-4 shrink-0">
       <h3 className="text-xs font-bold text-slate-800 dark:text-slate-400 uppercase tracking-wider">Trending News</h3>
       <div className="flex items-center gap-1">
         <div className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse"></div>
         <span className="text-[10px] text-slate-500 font-bold uppercase">Live</span>
       </div>
     </div>
-    <div className="news-container relative h-48 overflow-hidden">
+    <div className="news-container relative flex-1 min-h-0 overflow-hidden">
       <div className="flex flex-col gap-4 animate-vertical-scroll">
         {[...Array(2)].map((_, i) => (
           <div key={i} className="contents">
