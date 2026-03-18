@@ -40,7 +40,7 @@ const WIDGETS_CONFIG: Record<string, { component: React.FC; defaultClass: string
   sticky: { component: StickyNotesWidget as React.FC, defaultClass: "col-span-1 md:col-span-2" },
 };
 
-const DEFAULT_LAYOUT = ["clock", "timer", "task", "music", "spend", "news", "calendar", "sticky"];
+const DEFAULT_LAYOUT = ["clock", "timer", "task", "spend", "news", "calendar", "sticky"];
 
 export function DashboardGrid() {
   const [layoutIds, setLayoutIds] = useState<string[]>([]);
@@ -51,17 +51,23 @@ export function DashboardGrid() {
     const savedLayout = localStorage.getItem("dashboardLayout");
     if (savedLayout) {
       try {
-        setLayoutIds(JSON.parse(savedLayout));
-      } catch (e) {
-        setLayoutIds(DEFAULT_LAYOUT);
+        const parsed = JSON.parse(savedLayout).filter((id: string) => id !== "music");
+        setTimeout(() => setLayoutIds(parsed), 0);
+      } catch {
+        setTimeout(() => setLayoutIds(DEFAULT_LAYOUT), 0);
       }
     } else {
-      setLayoutIds(DEFAULT_LAYOUT);
+      setTimeout(() => setLayoutIds(DEFAULT_LAYOUT), 0);
     }
   }, []);
 
   const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(PointerSensor, { 
+      activationConstraint: { 
+        delay: 200, 
+        tolerance: 5,
+      } 
+    }),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
   );
 

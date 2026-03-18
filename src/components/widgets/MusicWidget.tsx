@@ -1,53 +1,115 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 
-export const MusicWidget = () => (
-  <div className="glass rounded-2xl p-6 widget-shadow transform transition-transform hover:scale-[1.01] duration-300 h-full flex items-center">
-    <div className="flex w-full items-center gap-6">
-      <div className="relative group">
-        <div className="h-24 w-24 rounded-xl overflow-hidden shadow-lg border-2 border-white dark:border-slate-800">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            className="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-110"
-            alt="Lofi hip hop album cover with chill aesthetic"
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuARrEWGnK81ojuoqiRer7Z6UDZW15uwgADSKXwn5fVZ5sSz-0FmpIITr74FkP5zgHKJQyaSeaLVw4SgpsmVDudjS6Wdcj0iOSxELRt2li36OpyV8DBFdyAB2_My6HAwNJC8Re65vMEN7Ph-ak7IYBzuoi9u4KzaulyzXlHdcmth703slEqnsUcBCnqbXiQHFa_n9f4t-UA9JPuyk6_ms-l5H8KGTzbZY33QMQ8LDWpB_qxpAe72bXcfWjROufEYZMbkE6fA1kvZcQ8Y"
-          />
-        </div>
-        <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity rounded-xl cursor-pointer backdrop-blur-[2px]">
-          <span className="material-symbols-outlined text-white text-3xl">play_circle</span>
+export const MusicWidget = () => {
+  // Safe default: Lofi Girl 24/7 stream
+  const [embedUrl, setEmbedUrl] = useState("https://www.youtube.com/embed/live_stream?channel=UCSJ4gkVC6NrvII8umztf0Ow");
+  const [platform, setPlatform] = useState<"youtube" | "spotify">("youtube");
+  const [videoMode, setVideoMode] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [inputUrl, setInputUrl] = useState("");
+
+  const handleSaveUrl = () => {
+    if (!inputUrl.trim()) return;
+    
+    let parsedUrl = "";
+    let newPlatform: "youtube" | "spotify" = "youtube";
+    
+    if (inputUrl.includes("youtube.com") || inputUrl.includes("youtu.be")) {
+      newPlatform = "youtube";
+      if (inputUrl.includes("watch?v=")) {
+        const id = new URLSearchParams(inputUrl.split("?")[1]).get("v");
+        parsedUrl = `https://www.youtube.com/embed/${id}`;
+      } else if (inputUrl.includes("youtu.be/")) {
+        const id = inputUrl.split("youtu.be/")[1]?.split("?")[0];
+        parsedUrl = `https://www.youtube.com/embed/${id}`;
+      } else {
+        parsedUrl = inputUrl; // Fallback
+      }
+    } else if (inputUrl.includes("spotify.com")) {
+      newPlatform = "spotify";
+      if (!inputUrl.includes("/embed/")) {
+        // e.g., https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M
+        parsedUrl = inputUrl.replace("spotify.com/", "spotify.com/embed/");
+      } else {
+        parsedUrl = inputUrl;
+      }
+    } else {
+      parsedUrl = inputUrl; // Blind fallback for others (SoundCloud, etc) if they support iframe
+      newPlatform = "youtube";
+    }
+
+    if (parsedUrl) {
+      setEmbedUrl(parsedUrl);
+      setPlatform(newPlatform);
+      setIsEditing(false);
+      setInputUrl("");
+    }
+  };
+
+  return (
+    <div className="glass rounded-2xl p-6 widget-shadow transform transition-transform hover:scale-[1.01] duration-300 h-full flex flex-col">
+      <div className="flex justify-between items-center mb-4">
+        <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Music Player</h3>
+        <div className="flex gap-2">
+          {platform === "youtube" && (
+            <button 
+              onClick={() => setVideoMode(!videoMode)} 
+              className={`p-1.5 rounded-lg transition-colors flex items-center justify-center ${videoMode ? 'bg-primary/10 text-primary' : 'text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-800'}`}
+              title={videoMode ? "Hide Video" : "Show Video"}
+            >
+              <span className="material-symbols-outlined text-sm">{videoMode ? 'visibility' : 'visibility_off'}</span>
+            </button>
+          )}
+          <button 
+            onClick={() => setIsEditing(!isEditing)} 
+            className={`p-1.5 rounded-lg transition-colors flex items-center justify-center ${isEditing ? 'bg-primary/10 text-primary' : 'text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-800'}`}
+            title="Settings"
+          >
+            <span className="material-symbols-outlined text-sm">settings</span>
+          </button>
         </div>
       </div>
-      <div className="flex-1">
-        <div className="flex justify-between items-start">
-          <div>
-            <h3 className="font-bold text-lg text-slate-800 dark:text-slate-100">Midnight Study</h3>
-            <p className="text-sm text-slate-500">Lofi Girl • Chill Beats</p>
-          </div>
-          <span className="material-symbols-outlined text-primary animate-pulse">equalizer</span>
-        </div>
-        <div className="mt-6 flex items-center gap-4">
-          <span className="material-symbols-outlined text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer transition-colors block mt-[2px]">
-            skip_previous
-          </span>
-          <button className="h-10 w-10 bg-primary hover:bg-blue-700 text-white rounded-full flex items-center justify-center shadow-md shadow-primary/20 transition-colors cursor-pointer transform hover:scale-105">
-            <span className="material-symbols-outlined block ml-[1px] mt-[1px]">pause</span>
-          </button>
-          <span className="material-symbols-outlined text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer transition-colors block mt-[2px]">
-            skip_next
-          </span>
-          <div className="flex-1 flex flex-col gap-1 ml-4">
-            <div className="h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full w-full relative cursor-pointer group">
-              <div className="absolute left-0 h-full bg-primary rounded-full transition-all duration-300 shadow-[0_0_6px_rgba(59,130,246,0.6)]" style={{ width: "65%" }}></div>
-              <div className="absolute left-[65%] top-1/2 -translate-y-1/2 -translate-x-1/2 w-3 h-3 bg-white border border-primary rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow-sm"></div>
+
+      <div className="flex-1 flex flex-col justify-center">
+        {isEditing ? (
+          <div className="flex flex-col gap-3 animate-fade-in py-2">
+             <label className="text-xs font-semibold text-slate-600 dark:text-slate-300">Paste YouTube/Spotify Link</label>
+            <input 
+              type="text" 
+              value={inputUrl}
+              onChange={(e) => setInputUrl(e.target.value)}
+              placeholder="https://..."
+              className="w-full px-4 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-white/50 dark:bg-slate-800/50 outline-none focus:border-primary focus:ring-1 focus:ring-primary placeholder:text-slate-400 transition-all shadow-inner"
+              autoFocus
+            />
+            <div className="flex gap-3 mt-1">
+              <button 
+                onClick={() => setIsEditing(false)} 
+                className="flex-1 py-2 text-xs font-semibold rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+               >
+                Cancel
+              </button>
+              <button 
+                onClick={handleSaveUrl} 
+                className="flex-1 py-2 text-xs font-bold rounded-xl bg-primary text-white shadow-lg shadow-primary/20 hover:opacity-90 transition-all transform hover:scale-[1.02] active:scale-[0.98]"
+              >
+                Save
+              </button>
             </div>
-            <div className="flex justify-between text-[10px] text-slate-400 font-medium mt-1">
-              <span>2:14</span>
-              <span>3:45</span>
-            </div>
           </div>
-        </div>
+        ) : (
+          <div className={`w-full relative rounded-xl overflow-hidden shadow-inner transition-all duration-500 bg-black/5 ${platform === 'youtube' ? (videoMode ? 'h-[240px]' : 'h-[80px]') : (videoMode ? 'h-[352px]' : 'h-[152px]')}`}>
+            <iframe
+              src={embedUrl}
+              className="absolute top-0 left-0 w-full h-full border-0 rounded-xl"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            ></iframe>
+          </div>
+        )}
       </div>
     </div>
-  </div>
-);
+  );
+};

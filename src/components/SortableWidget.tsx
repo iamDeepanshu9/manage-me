@@ -24,18 +24,10 @@ export function SortableWidget({ id, className = "", children }: SortableWidgetP
     <div
       ref={setNodeRef}
       style={style}
-      className={`relative group/widget ${className} ${isDragging ? "shadow-2xl scale-105" : ""}`}
+      {...attributes}
+      {...listeners}
+      className={`relative group/widget ${className} ${isDragging ? "shadow-2xl scale-105 z-50 cursor-grabbing" : ""}`}
     >
-      {/* Drag Handle */}
-      <div 
-        {...attributes} 
-        {...listeners}
-        className="absolute top-4 right-4 z-20 cursor-grab active:cursor-grabbing opacity-0 group-hover/widget:opacity-100 transition-opacity bg-white/80 dark:bg-slate-800/80 p-1.5 rounded-lg shadow-sm backdrop-blur-sm border border-slate-200 dark:border-slate-700"
-        title="Drag to move widget"
-      >
-        <span className="material-symbols-outlined text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 text-sm block">drag_indicator</span>
-      </div>
-      
       {children}
     </div>
   );

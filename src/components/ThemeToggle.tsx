@@ -7,7 +7,7 @@ export function ThemeToggle() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
-  useEffect(() => setMounted(true), []);
+  useEffect(() => { setTimeout(() => setMounted(true), 0); }, []);
 
   if (!mounted) return <div className="p-2 w-9 h-9"></div>;
 
