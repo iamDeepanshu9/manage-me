@@ -28,7 +28,7 @@ import { StickyNotesWidget } from "./widgets/StickyNotesWidget";
 
 // --- GRID DEFINITIONS ---
 
-const WIDGETS_CONFIG: Record<string, { component: React.FC; defaultClass: string }> = {
+const WIDGETS_CONFIG: Record<string, { component: React.FC<{ widgetSize?: string }>; defaultClass: string }> = {
   clock: { component: ClockWidget as React.FC, defaultClass: "col-span-1 md:col-span-2" },
   timer: { component: TimerWidget as React.FC, defaultClass: "col-span-1 md:col-span-1" },
   task: { component: TaskWidget as React.FC, defaultClass: "row-span-2 col-span-1 md:col-span-1" },
@@ -145,7 +145,7 @@ export function DashboardGrid() {
                 currentSize={finalCurrentSize}
                 onSizeChange={(size) => handleSizeChange(id, size)}
               >
-                <WidgetComponent />
+                <WidgetComponent widgetSize={finalCurrentSize} />
               </SortableWidget>
             );
           })}
